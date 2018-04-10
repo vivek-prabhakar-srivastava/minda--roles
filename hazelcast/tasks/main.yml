@@ -1,0 +1,46 @@
+---
+# tasks file for hazelcast
+
+- name: copied hazelcat file
+  copy:
+    src: /etc/ansible/roles/minda-roles/hazelcast/hazelcast-3.5.2.tar.gz
+    dest: /disk2/
+
+- name: Extract foo.tgz 
+  unarchive:
+    src: /disk2/hazelcast-3.5.2.tar.gz
+    dest: /disk2/
+    remote_src: yes
+
+- file:
+    src: /disk2/hazelcast-3.5.2
+    dest: /disk2/hazelcast
+    owner: root
+    group: root
+    state: link
+
+- name: create disk2 directory
+  file:
+    path: /disk2/hazelcast/logs
+    state: directory
+    mode: 0755
+
+- name: Adding hazelcast configuration file ...
+  template: src=hazelcast.xml.j2 dest=/disk2/hazelcast/bin/hazelcast.xml
+- group:
+    name: hazel
+    state: present
+- user:
+    name: hazel
+    group: hazel
+- name: Adding hazelcast configuration file ...
+  template: src=hazelcast.j2 dest=/etc/init.d/hazelcast owner=hazel group=hazel mode=0755
+
+
+- name: Adding hazelcast configuration file ...
+  template: src=server.sh.j2 dest=/disk2/hazelcast/bin/server.sh owner=root group=root mode=0755
+
+- name: Start service
+  service: name=hazelcast state=restarted
+
+

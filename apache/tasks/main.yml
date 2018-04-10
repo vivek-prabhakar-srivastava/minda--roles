@@ -1,0 +1,50 @@
+---
+# tasks file for apache
+
+- name: Installing apache2 ...
+  apt: name=apache2 state=installed
+
+- name: remove defaul configuration file........
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+
+- name: create apache directory
+  file:
+    path: /disk2/site-apache-root/fleet/commons
+    state: directory
+    mode: 0755
+
+- name: create apache directory
+  file:
+    path: /disk2/site-apache-root/fleet/carot
+    state: directory
+    mode: 0755
+
+- name: Adding apache configuration file ...
+  template: src=fleet.conf.j2 dest=/etc/apache2/sites-available/fleet.conf
+
+- name: Adding apache configuration file ...
+  template: src=env.js.j2 dest=/disk2/site-apache-root/fleet/commons/env.js
+
+- name: Adding apache configuration file ...
+  template: src=ports.conf.j2 dest=/etc/apache2/ports.conf
+
+- file:
+    src: /etc/apache2/sites-available/fleet.conf
+    dest: /etc/apache2/sites-enabled/fleet.conf
+    owner: root
+    group: root
+    state: link
+
+- name: chagne the recursive permission of apachefile
+  file:
+    dest: /disk2/site-apache-root
+    owner: www-data
+    group: www-data
+    recurse: yes
+
+- name: service restart apache
+  service:
+    name: apache2
+    state: restarted

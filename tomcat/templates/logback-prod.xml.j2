@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- The default logging configuration logs only to the system console.       -->
+<!-- This is not desired for deployed applications, see: logback.deployed.xml -->
+
+<configuration debug="false">
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+          <File>/disk2/applogs/iconnect_services.log</File>
+          <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                  <FileNamePattern>/disk2/applogs/iconnect_services.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                  <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 50MB -->
+                    <maxFileSize>100MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                    <!-- keep 30 days' worth of history -->
+                    <maxHistory>10</maxHistory>
+           </rollingPolicy>
+           <layout class="ch.qos.logback.classic.PatternLayout">
+  <Pattern>*%X{applicationName}* %date{ISO8601} %-5level [%thread] remoteAddress:%X{remoteAddress}
+                customerId:%X{customerId} requestUri:%X{requestUri} %class.%method\(%file:%line\) - %msg %n
+            </Pattern>           
+</layout>
+  </appender>
+
+  <appender name="SCOPE_PACKETS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <File>/disk2/applogs/iconnect_scope_packets.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>/disk2/applogs/iconnect_scope_packets.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                    <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 50MB -->
+                    <maxFileSize>100MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                    <!-- keep 30 days' worth of history -->
+                    <maxHistory>10</maxHistory>
+           </rollingPolicy>
+
+          <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg%n</pattern>
+          </layout>
+   </appender>
+   
+   <appender name="DANLAW_PACKETS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <File>/disk2/applogs/iconnect_danlaw_packets.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>/disk2/applogs/iconnect_danlaw_packets.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                    <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 50MB -->
+                    <maxFileSize>10MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                    <!-- keep 30 days' worth of history -->
+                    <maxHistory>10</maxHistory>
+            </rollingPolicy>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%msg%n</Pattern>
+        </layout>
+   </appender>
+   <appender name="ERM_PACKETS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>/disk2/applogs/iconnect_erm_packets.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>/disk2/applogs/iconnect_erm_packets.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                    <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 50MB -->
+                    <maxFileSize>10MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                    <!-- keep 30 days' worth of history -->
+                    <maxHistory>10</maxHistory>
+           </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>*%msg %n</Pattern>
+        </layout>
+  </appender>
+
+    
+  <appender name="CONCOX_PACKETS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+          <File>/disk2/applogs/iconnect_concox_packets.log</File>
+          <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+              <FileNamePattern>/disk2/applogs/iconnect_concox_packets.%i.log</FileNamePattern>
+              <MinIndex>1</MinIndex>
+              <MaxIndex>5</MaxIndex>
+          </rollingPolicy>
+          <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+              <MaxFileSize>5MB</MaxFileSize>
+          </triggeringPolicy>
+          <layout class="ch.qos.logback.classic.PatternLayout">
+              <Pattern>*%msg %n</Pattern>
+          </layout>
+  </appender>
+  
+  <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+      <remoteHost>perkibana</remoteHost>
+      <port>5000</port>
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+  </appender>
+    
+  <root>
+    <level value="WARN" />
+    <appender-ref ref="STASH" />
+    <appender-ref ref="FILE" />
+
+  </root>
+  <logger name="org.hibernate.engine.StatefulPersistenceContext">
+        <level value="ERROR"/>
+  </logger>
+
+  <logger name="com.minda.iconnect.das.device.scope.PacketLoggerUtility" additivity="false" >
+        <level value="DEBUG"/>
+        <appender-ref ref="SCOPE_PACKETS" />
+  </logger>
+  <logger name="com.minda.iconnect.das.controller.DanlawPushDataController">
+        <level value="DEBUG"/>
+        <appender-ref ref="DANLAW_PACKETS"/>
+        </logger>
+        <logger name="com.minda.iconnect.das.server.handler.ERMMessageLoggerUtil">
+        <level value="INFO"/>
+        <appender-ref ref="ERM_PACKETS"/>
+  </logger>
+  <logger name="com.minda.iconnect.das.server.handler.ConcoxMessageLoggerUtil">
+        <level value="DEBUG"/>
+        <appender-ref ref="CONCOX_PACKETS"/>
+  </logger>
+</configuration>

@@ -1,0 +1,38 @@
+---
+
+- name: create disk2 directory
+  file:
+    path: /disk2/applogs
+    state: directory
+    mode: 0755
+    owner: tomcat
+    group: tomcat
+
+- name: create soft link for tomcat...
+  file:
+    src: /disk2/apache-tomcat-8.0.47
+    dest: /disk2/tomcat
+    owner: tomcat
+    group: tomcat
+    state: link
+
+- name: create iconnect_services.properties file
+  file:
+    path: "{{ user_directory }}/iconnect_services.properties"
+    state: touch
+
+- name:  template everything for fooserv
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+     - { src: 'templates/catalina.sh.j2', dest: '/disk2/tomcat/bin/catalina.sh' }
+     - { src: 'templates/context.xml.j2', dest: '/disk2/tomcat/conf/context.xml' }
+
+
+- name: Adding catalina configuration file ...
+  template: src=tomcat.j2 dest=/etc/init.d/tomcat owner=root group=root mode=0755
+
+- name: Adding catalina configuration file ...
+  template: src=logback-prod.xml.j2 dest={{ user_directory }}/logback-{{ env_name }}.xml owner=tomcat group=tomcat
+
+- name: Start tomcat
+  service: name=tomcat state=restarted

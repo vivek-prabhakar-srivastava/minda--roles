@@ -1,0 +1,17 @@
+---
+# tasks file for haproxy
+- name: Update apt packages
+  become: true
+  apt:
+    update_cache: yes
+
+
+- name: Installing haproxy ...
+  apt: name=haproxy state=present
+  notify:
+    - service haproxy stop
+
+- name: Adding apache configuration file ...
+  template: src=haproxy.conf.j2 dest=/etc/haproxy/haproxy.cfg
+  notify:
+    - service haproxy start

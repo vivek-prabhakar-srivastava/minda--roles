@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function start {
+   cd /disk2/hazelcast/bin
+   rm -f /disk2/hazelcast/bin/hazelcast.pid
+   nohup su root -c ./server.sh >> /disk2/hazelcast/logs/hazel.log  2>&1
+   #su -c "$cmd"
+   return 0; }
+
+
+function stop {
+   pid="$(</disk2/hazelcast/bin/hazelcast.pid)"
+   kill -s KILL $pid || return 1
+   return 0; }
+
+
+function main {
+   RETVAL=0
+   case "$1" in
+      start)
+         start
+         ;;
+      stop)
+         stop
+         ;;
+      *)
+         echo "Usage: $0 {start|stop}"
+         exit 1
+         ;;
+      esac
+   exit $RETVAL
+}
+
+
+main $1

@@ -1,0 +1,5 @@
+---
+# vars file for hazelcast
+name: "iconnectqa"
+password: "iconnect"
+ansible_eth0.ipv4.address: "192.168.88.110"

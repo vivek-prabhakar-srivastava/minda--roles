@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+        DocumentRoot /disk2/site-apache-root
+#        ServerName stage.smlsaarthi.com
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+<Directory /disk2/site-apache-root/>
+        Options FollowSymLinks
+        AllowOverride None
+	FileETag INode MTime Size
+        Require all granted
+</Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+        DocumentRoot /disk2/site-apache-root/isuzu
+        ServerName www.smlsaarthi.com
+        ErrorLog ${APACHE_LOG_DIR}/smlerror.log
+        CustomLog ${APACHE_LOG_DIR}/smlaccess.log combined
+<Directory /disk2/site-apache-root/isuzu>
+        Options FollowSymLinks
+        AllowOverride None
+        Require all granted
+</Directory>
+#<Directory>
+#Alias /isuzu_admin "/disk2/site-apache-root/isuzu_admin/"
+#</Directory>
+</VirtualHost>

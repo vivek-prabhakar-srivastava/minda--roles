@@ -1,0 +1,37 @@
+---
+# tasks file for tomcat
+
+- name: create disk2 directory
+  file:
+    path: /disk2
+    state: directory
+    mode: 0755
+
+- name: Create system accounts
+  user:
+    name: "{{ user_name }}"
+    home: "{{ user_directory }}"
+    state: present
+
+- name: copied tomcat file
+  copy:
+    src: apache-tomcat-8.0.47.tar.gz
+    dest: /disk2/
+
+- name: Extract foo.tgz into /var/lib/foo
+  unarchive:
+    src: /disk2/apache-tomcat-8.0.47.tar.gz
+    dest: /disk2/
+    remote_src: yes
+
+- name: chagne the recursive permission of tomcat 
+  file: 
+    dest: /disk2/apache-tomcat-8.0.47
+    owner: tomcat
+    group: tomcat
+    recurse: yes
+
+- include: config.yml
+
+- name: Start tomcat
+  service: name=tomcat state=restarted

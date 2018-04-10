@@ -1,0 +1,4 @@
+---
+# vars file for redis
+ansible_eth0.ipv4.address: "40.121.182.2"
+dir_path: "/disk2/redis/data"

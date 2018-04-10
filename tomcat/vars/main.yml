@@ -1,0 +1,11 @@
+---
+# vars file for tomcat
+user_name: "tomcat"
+user_directory: "/home/tomcat"
+#server_ip: "192.168.88.104"
+database_server_hostname: "qabackend5"
+mysql_username: "iconnect"
+mysql_password: "iconnect"
+env_name: "qa"
+min_memory_size: "512"
+max_memory_size: "1024"

@@ -1,0 +1,4 @@
+---
+# vars file for apache
+app_url: "qalocal.carot.com"
+apache_port: "80"

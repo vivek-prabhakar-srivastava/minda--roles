@@ -1,0 +1,8 @@
+---
+# handlers file for haproxy
+
+- name: service haproxy stop
+  service: name=haproxy state=stop
+
+- name: service haproxy start
+  service: name=haproxy state=started

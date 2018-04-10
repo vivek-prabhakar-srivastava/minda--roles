@@ -1,0 +1,35 @@
+---
+# tasks file for redis
+
+- name: To add redis repo
+  apt_repository: repo='ppa:chris-lea/redis-server'
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Installing redis ...
+  apt: name=redis-server state=installed
+
+- name: create redis data directory
+  file:
+    path: /disk2/redis/data
+    state: directory
+    mode: 0755
+
+- name: Adding redis configuration file ...
+  template: src=redis.conf.j2 dest=/etc/redis/redis.conf
+
+
+- name: chagne the recursive permission of redis data directory....
+  file:
+    dest: /disk2/redis
+    owner: redis
+    group: redis
+    recurse: yes
+
+- name: service restart redis
+  service:
+    name: redis-server
+    state: restarted
